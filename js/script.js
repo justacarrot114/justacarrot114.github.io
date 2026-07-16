@@ -45,6 +45,13 @@
       activateGif(gifIndex);
     }, 900);
 
+    $gifs.each(function(){
+      var lazySrc = $(this).attr('data-src');
+      if (lazySrc && !this.getAttribute('src')) {
+        this.setAttribute('src', lazySrc);
+      }
+    });
+
     var waitForImage = function(img){
       return new Promise(function(resolve){
         if (!img || img.complete) {
@@ -55,6 +62,35 @@
         img.addEventListener('load', resolve, { once: true });
         img.addEventListener('error', resolve, { once: true });
       });
+    };
+
+    var waitForImageUrl = function(url){
+      return new Promise(function(resolve){
+        if (!url) {
+          resolve();
+          return;
+        }
+
+        var img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve;
+        img.src = url;
+      });
+    };
+
+    var getBackgroundImageUrls = function(){
+      var urls = [];
+      Array.prototype.slice.call(document.querySelectorAll('body, #container, #wrap, #header, #banner, #header-outer, #logo-wrap')).forEach(function(el){
+        var bg = window.getComputedStyle(el).backgroundImage;
+        if (!bg || bg === 'none') return;
+
+        bg.replace(/url\(["']?([^"')]+)["']?\)/g, function(_, url){
+          if (urls.indexOf(url) === -1) {
+            urls.push(url);
+          }
+        });
+      });
+      return urls;
     };
 
     var waitForMusic = function(){
@@ -82,17 +118,25 @@
 
     var visibleImages = Array.prototype.slice.call(document.images).filter(function(img){
       return !img.closest('#blog-loading-screen');
-    }).slice(0, 8);
+    });
+    visibleImages.forEach(function(img){
+      img.loading = 'eager';
+    });
+    var loadingImages = Array.prototype.slice.call($gifs);
+    var backgroundImages = getBackgroundImageUrls();
 
     var minimumShow = new Promise(function(resolve){
       setTimeout(resolve, 1400);
     });
-    var maximumWait = new Promise(function(resolve){
-      setTimeout(resolve, 5200);
-    });
-    var pageReady = Promise.all(visibleImages.map(waitForImage).concat([waitForMusic(), minimumShow]));
+    var pageReady = Promise.all(
+      visibleImages
+        .concat(loadingImages)
+        .map(waitForImage)
+        .concat(backgroundImages.map(waitForImageUrl))
+        .concat([waitForMusic(), minimumShow])
+    );
 
-    Promise.race([pageReady, maximumWait]).then(function(){
+    pageReady.then(function(){
       sessionStorage.setItem(loaderSeenKey, '1');
       clearInterval(gifTimer);
       $loader.addClass('is-hidden');
