@@ -59,25 +59,24 @@
 
     var waitForMusic = function(){
       return new Promise(function(resolve){
-        var firstTrack = '/assets/music/mao-buyi-yicheng-shanlu-web.mp3';
+        var firstTrack = '/assets/music/mao-buyi-yicheng-shanlu-fast.mp3';
         var previewAudio = new Audio();
         var done = false;
 
         var finish = function(){
           if (done) return;
           done = true;
-          previewAudio.removeAttribute('src');
-          previewAudio.load();
+          window.__carrotMusicWarmup = previewAudio;
           resolve();
         };
 
-        previewAudio.preload = 'metadata';
+        previewAudio.preload = 'auto';
+        previewAudio.addEventListener('canplaythrough', finish, { once: true });
         previewAudio.addEventListener('canplay', finish, { once: true });
-        previewAudio.addEventListener('loadedmetadata', finish, { once: true });
         previewAudio.addEventListener('error', finish, { once: true });
         previewAudio.src = firstTrack;
         previewAudio.load();
-        setTimeout(finish, 2600);
+        setTimeout(finish, 4000);
       });
     };
 
@@ -535,13 +534,13 @@
   var musicTracks = [
     {
       title: '毛不易 - 一程山路',
-      src: '/assets/music/mao-buyi-yicheng-shanlu-web.mp3',
+      src: '/assets/music/mao-buyi-yicheng-shanlu-fast.mp3',
       type: 'audio/mpeg',
       playable: true
     },
     {
       title: '庄达菲 - 湘江中路',
-      src: '/assets/music/zhuang-dafei-xiangjiang-zhonglu-web.mp3',
+      src: '/assets/music/zhuang-dafei-xiangjiang-zhonglu-fast.mp3',
       type: 'audio/mpeg'
     }
   ];
@@ -640,7 +639,7 @@
         localStorage.setItem(musicStateKey, JSON.stringify({
           src: track ? track.src : audio.getAttribute('src'),
           index: currentTrackIndex,
-          currentTime: audio.currentTime || 0,
+          currentTime: pendingRestoreTime !== null ? pendingRestoreTime : (audio.currentTime || 0),
           paused: audio.paused || audio.ended,
           panelOpen: $musicPanel.hasClass('is-open'),
           updatedAt: now
@@ -763,6 +762,15 @@
       saveMusicState(true);
     });
 
+    $audio.on('canplay playing', function(){
+      var track = playableTracks[currentTrackIndex];
+      if (track && $musicTitle.text().indexOf('正在接上播放') !== -1) {
+        $musicTitle.text(track.title || ('音乐 ' + (currentTrackIndex + 1)));
+      }
+      updateMusicButtons();
+      saveMusicState(false);
+    });
+
     $audio.on('error', function(){
       $musicTitle.text('当前歌曲暂时无法播放，正在切下一首');
       updateMusicButtons();
@@ -793,22 +801,30 @@
       });
 
       currentTrackIndex = savedIndex >= 0 ? savedIndex : 0;
-      var track = playableTracks[currentTrackIndex];
-      audio.src = track.src;
-      audio.volume = 0.25;
-      $musicTitle.text(track.title || ('音乐 ' + (currentTrackIndex + 1)));
-      $progress.prop('disabled', false);
+      var track = prepareTrack(currentTrackIndex);
+      if (!track) return;
+      audio.preload = state.paused ? 'metadata' : 'auto';
+      var restoredTime = Math.max(0, Number(state.currentTime) || 0);
+      pendingRestoreTime = restoredTime > 0.2 ? restoredTime : null;
 
-      if (state.currentTime) {
-        audio.addEventListener('loadedmetadata', function restoreTime(){
-          audio.removeEventListener('loadedmetadata', restoreTime);
-          audio.currentTime = Math.min(state.currentTime, audio.duration || state.currentTime);
-        });
+      var applyRestoreTime = function(){
+        if (pendingRestoreTime === null) return;
+        try {
+          audio.currentTime = Math.min(pendingRestoreTime, audio.duration || pendingRestoreTime);
+          pendingRestoreTime = null;
+        } catch (e) {}
+      };
+
+      if (pendingRestoreTime) {
+        audio.addEventListener('loadedmetadata', applyRestoreTime, { once: true });
+        audio.addEventListener('canplay', applyRestoreTime, { once: true });
       }
 
       setMusicPanel(!!state.panelOpen);
 
       if (!state.paused) {
+        $musicTitle.text((track.title || '音乐') + '（正在接上播放...）');
+        audio.load();
         var playPromise = audio.play();
 
         if (playPromise && playPromise.catch) {
@@ -816,12 +832,29 @@
             $musicTitle.text((track.title || '音乐') + '（点击音乐按钮继续播放）');
           });
         }
+      } else if (pendingRestoreTime) {
+        audio.load();
       }
 
       updateMusicButtons();
     };
 
-    $(window).on('beforeunload', saveMusicState);
+    $(window).on('pagehide beforeunload', function(){
+      saveMusicState(true);
+    });
+    $(document).on('pointerdown click', 'a[href]', function(){
+      var href = $(this).attr('href');
+      if (!href || href.indexOf('#') === 0 || /^https?:\/\//i.test(href) || /^mailto:/i.test(href)) return;
+      saveMusicState(true);
+    });
+    $(window).on('pageshow', function(){
+      updateMusicButtons();
+    });
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'hidden') {
+        saveMusicState(true);
+      }
+    });
     restoreMusicState();
   }
 
