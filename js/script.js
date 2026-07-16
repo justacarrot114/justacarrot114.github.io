@@ -59,7 +59,7 @@
 
     var waitForMusic = function(){
       return new Promise(function(resolve){
-        var firstTrack = '/assets/music/mao-buyi-yicheng-shanlu-fast.mp3';
+        var firstTrack = '/assets/music/mao-buyi-yicheng-shanlu-fixed.mp3';
         var previewAudio = new Audio();
         var done = false;
 
@@ -534,7 +534,7 @@
   var musicTracks = [
     {
       title: '毛不易 - 一程山路',
-      src: '/assets/music/mao-buyi-yicheng-shanlu-fast.mp3',
+      src: '/assets/music/mao-buyi-yicheng-shanlu-fixed.mp3',
       type: 'audio/mpeg',
       playable: true
     },
@@ -582,7 +582,7 @@
     var $progress = $('#sidebar-music-progress');
     var $floatingMusicToggle = $('#floating-music-toggle');
     var playableTracks = musicTracks;
-    var musicStateKey = 'carrot-blog-music-state';
+    var musicStateKey = 'carrot-blog-music-state-v2';
     var lastMusicStateSave = 0;
     var pendingRestoreTime = null;
 
