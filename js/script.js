@@ -12,6 +12,99 @@
   var isArticleListPage = $('.article').length > 1 || isHomePage || isArchiveOrCategoryPage;
   var isDetailPage = $('.article').length === 1 && !isArticleListPage;
 
+  var initLoadingScreen = function(){
+    var $loader = $('#blog-loading-screen');
+    if (!$loader.length) return;
+
+    var loaderSeenKey = 'carrot-blog-loader-seen';
+    var isFirstVisit = !sessionStorage.getItem(loaderSeenKey);
+    var $gifs = $loader.find('.blog-loading-gif');
+    var gifIndex = 0;
+    var activateGif = function(index){
+      var $gif = $gifs.eq(index);
+      var lazySrc = $gif.attr('data-src');
+
+      if (lazySrc && !$gif.attr('src')) {
+        $gif.attr('src', lazySrc);
+      }
+
+      $gifs.removeClass('is-active');
+      $gif.addClass('is-active');
+    };
+
+    if (!isFirstVisit) {
+      $loader.addClass('is-hidden');
+      setTimeout(function(){
+        $loader.remove();
+      }, 500);
+      return;
+    }
+
+    var gifTimer = setInterval(function(){
+      gifIndex = (gifIndex + 1) % $gifs.length;
+      activateGif(gifIndex);
+    }, 900);
+
+    var waitForImage = function(img){
+      return new Promise(function(resolve){
+        if (!img || img.complete) {
+          resolve();
+          return;
+        }
+
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      });
+    };
+
+    var waitForMusic = function(){
+      return new Promise(function(resolve){
+        var firstTrack = '/assets/music/mao-buyi-yicheng-shanlu-web.mp3';
+        var previewAudio = new Audio();
+        var done = false;
+
+        var finish = function(){
+          if (done) return;
+          done = true;
+          previewAudio.removeAttribute('src');
+          previewAudio.load();
+          resolve();
+        };
+
+        previewAudio.preload = 'metadata';
+        previewAudio.addEventListener('canplay', finish, { once: true });
+        previewAudio.addEventListener('loadedmetadata', finish, { once: true });
+        previewAudio.addEventListener('error', finish, { once: true });
+        previewAudio.src = firstTrack;
+        previewAudio.load();
+        setTimeout(finish, 2600);
+      });
+    };
+
+    var visibleImages = Array.prototype.slice.call(document.images).filter(function(img){
+      return !img.closest('#blog-loading-screen');
+    }).slice(0, 8);
+
+    var minimumShow = new Promise(function(resolve){
+      setTimeout(resolve, 1400);
+    });
+    var maximumWait = new Promise(function(resolve){
+      setTimeout(resolve, 5200);
+    });
+    var pageReady = Promise.all(visibleImages.map(waitForImage).concat([waitForMusic(), minimumShow]));
+
+    Promise.race([pageReady, maximumWait]).then(function(){
+      sessionStorage.setItem(loaderSeenKey, '1');
+      clearInterval(gifTimer);
+      $loader.addClass('is-hidden');
+      setTimeout(function(){
+        $loader.remove();
+      }, 520);
+    });
+  };
+
+  initLoadingScreen();
+
   if ($main.length && $searchWrap.length && $searchButton.length){
     var $homeButton = $('<a id="blog-home-link" href="/"><span class="fa fa-home"></span><span class="home-button-text">主页</span></a>');
     $searchButton.html('<span class="fa fa-search"></span>');
@@ -491,6 +584,8 @@
     var $floatingMusicToggle = $('#floating-music-toggle');
     var playableTracks = musicTracks;
     var musicStateKey = 'carrot-blog-music-state';
+    var lastMusicStateSave = 0;
+    var pendingRestoreTime = null;
 
     if (audio) {
       audio.volume = 0.25;
@@ -532,8 +627,12 @@
       $('#sidebar-music-stop .music-playback-icon').text(isPlaying ? '⏸' : '▶');
     };
 
-    var saveMusicState = function(){
+    var saveMusicState = function(force){
       if (!audio) return;
+
+      var now = Date.now();
+      if (!force && now - lastMusicStateSave < 1200) return;
+      lastMusicStateSave = now;
 
       var track = playableTracks[currentTrackIndex];
 
@@ -543,9 +642,27 @@
           index: currentTrackIndex,
           currentTime: audio.currentTime || 0,
           paused: audio.paused || audio.ended,
-          panelOpen: $musicPanel.hasClass('is-open')
+          panelOpen: $musicPanel.hasClass('is-open'),
+          updatedAt: now
         }));
       } catch (e) {}
+    };
+
+    var prepareTrack = function(index){
+      if (!playableTracks.length || !audio) return null;
+
+      currentTrackIndex = (index + playableTracks.length) % playableTracks.length;
+      var track = playableTracks[currentTrackIndex];
+
+      if (audio.getAttribute('src') !== track.src) {
+        audio.src = track.src;
+      }
+
+      audio.volume = 0.25;
+      $musicTitle.text(track.title || ('音乐 ' + (currentTrackIndex + 1)));
+      $progress.prop('disabled', false);
+
+      return track;
     };
 
     var loadTrack = function(index){
@@ -555,19 +672,15 @@
         return;
       }
 
-      currentTrackIndex = (index + playableTracks.length) % playableTracks.length;
-      var track = playableTracks[currentTrackIndex];
-      audio.src = track.src;
-      audio.volume = 0.25;
-      $musicTitle.text(track.title || ('音乐 ' + (currentTrackIndex + 1)));
-      $progress.prop('disabled', false);
+      var track = prepareTrack(index);
+      if (!track) return;
       var playPromise = audio.play();
 
       if (playPromise && playPromise.catch) {
         playPromise.catch(function(){
           $musicTitle.text((track.title || ('音乐 ' + (currentTrackIndex + 1))) + '（点击音乐按钮播放）');
           updateMusicButtons();
-          saveMusicState();
+          saveMusicState(true);
         });
       }
     };
@@ -587,7 +700,7 @@
           var track = playableTracks[currentTrackIndex];
           $musicTitle.text((track && track.title ? track.title : '音乐') + '（点击音乐按钮播放）');
           updateMusicButtons();
-          saveMusicState();
+          saveMusicState(true);
         });
       }
     };
@@ -601,7 +714,7 @@
       }
 
       updateMusicButtons();
-      saveMusicState();
+      saveMusicState(true);
     };
 
     var toggleMusicPlayback = function(){
@@ -614,7 +727,7 @@
       }
 
       updateMusicButtons();
-      saveMusicState();
+      saveMusicState(true);
     };
 
     $('#sidebar-music-toggle').on('click', function(){
@@ -632,13 +745,13 @@
     $('#sidebar-music-next').on('click', function(){
       loadTrack(currentTrackIndex + 1);
       updateMusicButtons();
-      saveMusicState();
+      saveMusicState(true);
     });
 
     $audio.on('timeupdate', function(){
       if (!audio || !audio.duration) return;
       $progress.val((audio.currentTime / audio.duration) * 100);
-      saveMusicState();
+      saveMusicState(false);
     });
 
     $audio.on('ended', function(){
@@ -647,7 +760,7 @@
 
     $audio.on('play pause ended', function(){
       updateMusicButtons();
-      saveMusicState();
+      saveMusicState(true);
     });
 
     $audio.on('error', function(){
@@ -661,7 +774,7 @@
     $progress.on('input', function(){
       if (!audio || !audio.duration) return;
       audio.currentTime = audio.duration * (Number(this.value) / 100);
-      saveMusicState();
+      saveMusicState(true);
     });
 
     var restoreMusicState = function(){
