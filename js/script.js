@@ -442,13 +442,13 @@
   var musicTracks = [
     {
       title: '毛不易 - 一程山路',
-      src: '/assets/music/mao-buyi-yicheng-shanlu-standard.mp3',
+      src: '/assets/music/mao-buyi-yicheng-shanlu-web.mp3',
       type: 'audio/mpeg',
       playable: true
     },
     {
       title: '庄达菲 - 湘江中路',
-      src: '/assets/music/zhuang-dafei-xiangjiang-zhonglu.mp3',
+      src: '/assets/music/zhuang-dafei-xiangjiang-zhonglu-web.mp3',
       type: 'audio/mpeg'
     }
   ];
@@ -465,22 +465,22 @@
 
     var musicHtml = [
       '<div id="sidebar-music-player">',
-        '<button type="button" id="sidebar-music-toggle" title="音乐" aria-label="音乐"><span class="fa fa-music"></span></button>',
+        '<button type="button" id="sidebar-music-toggle" title="音乐卡片" aria-label="音乐卡片"><span class="music-icon">♪</span></button>',
         '<div id="sidebar-music-panel" aria-hidden="true">',
           '<div id="sidebar-music-title">等待音乐</div>',
           '<input id="sidebar-music-progress" type="range" min="0" max="100" value="0" disabled>',
           '<div id="sidebar-music-controls">',
-            '<button type="button" id="sidebar-music-stop" title="播放 / 暂停"><span class="fa fa-pause"></span></button>',
-            '<button type="button" id="sidebar-music-next" title="播放下一首"><span class="fa fa-step-forward"></span></button>',
+            '<button type="button" id="sidebar-music-stop" title="播放 / 暂停"><span class="music-playback-icon">⏸</span></button>',
+            '<button type="button" id="sidebar-music-next" title="播放下一首"><span class="music-next-icon">⏭</span></button>',
           '</div>',
-          '<audio id="sidebar-audio"></audio>',
+          '<audio id="sidebar-audio" preload="none"></audio>',
         '</div>',
       '</div>'
     ].join('');
 
     $sidebarTools.append(musicHtml);
     $sidebar.append($sidebarTools);
-    $('body').append('<button type="button" id="floating-music-toggle" title="播放 / 暂停音乐" aria-label="播放 / 暂停音乐"><span class="fa fa-music"></span></button>');
+    $('body').append('<button type="button" id="floating-music-toggle" title="播放 / 暂停音乐" aria-label="播放 / 暂停音乐"><span class="music-icon">♪</span></button>');
 
     var $musicPlayer = $('#sidebar-music-player');
     var $musicPanel = $('#sidebar-music-panel');
@@ -529,9 +529,7 @@
     var updateMusicButtons = function(){
       var isPlaying = audio && !audio.paused && !audio.ended;
       $('#sidebar-music-toggle, #floating-music-toggle').toggleClass('is-playing', isPlaying);
-      $('#sidebar-music-stop span')
-        .toggleClass('fa-pause', isPlaying)
-        .toggleClass('fa-play', !isPlaying);
+      $('#sidebar-music-stop .music-playback-icon').text(isPlaying ? '⏸' : '▶');
     };
 
     var saveMusicState = function(){
