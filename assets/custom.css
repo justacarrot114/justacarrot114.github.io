@@ -1,0 +1,45 @@
+/* 全局字体优化（替换为更美观的字体） */
+body {
+    font-family: "Noto Sans SC", "Microsoft Yahei", sans-serif;
+}
+
+/* 标题样式美化 */
+h1, h2, h3 {
+    color: #2c3e50;
+    border-bottom: 2px solid #f5f5f5;
+    padding-bottom: 8px;
+}
+
+/* 导航栏背景色 */
+header.Header {
+    background-color: #34495e;
+}
+
+    header.Header a {
+        color: white !important;
+    }
+
+/* 文章卡片阴影（列表页） */
+article.Post {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+/* 头像圆形裁剪 */
+.author-avatar img {
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 底部栏改为白底黑字 */
+#footer {
+    background: #fff !important;
+    color: #000 !important;
+}
+
+    #footer a {
+        color: #000 !important;
+    }

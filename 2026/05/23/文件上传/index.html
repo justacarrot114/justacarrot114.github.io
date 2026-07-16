@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>文件上传 | 胡萝卜的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="绕过1. 前端限制绕过（JS 校验） 原理：仅用 JavaScript 在浏览器端检查文件后缀、大小等，服务器不校验或只依赖前端传来的结果。 具体操作： 禁用浏览器 JS：在浏览器设置或开发者工具中禁用 JavaScript，或用插件 NoScript。  直接发送，用 Burp Suite 抓包后修改后缀。  **修改 HTML&#x2F;JS：在开发者工具中直接修改 **allow_ext 变">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件上传">
+<meta property="og:url" content="https://justacarrot114.github.io/2026/05/23/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/index.html">
+<meta property="og:site_name" content="胡萝卜的博客">
+<meta property="og:description" content="绕过1. 前端限制绕过（JS 校验） 原理：仅用 JavaScript 在浏览器端检查文件后缀、大小等，服务器不校验或只依赖前端传来的结果。 具体操作： 禁用浏览器 JS：在浏览器设置或开发者工具中禁用 JavaScript，或用插件 NoScript。  直接发送，用 Burp Suite 抓包后修改后缀。  **修改 HTML&#x2F;JS：在开发者工具中直接修改 **allow_ext 变">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-23T14:41:46.000Z">
+<meta property="article:modified_time" content="2026-05-23T14:42:06.485Z">
+<meta property="article:author" content="car5ot">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="胡萝卜的博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">胡萝卜的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+</nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="https://justacarrot114.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-文件上传" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/23/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="article-date">
+  <time class="dt-published" datetime="2026-05-23T14:41:46.000Z" itemprop="datePublished">2026-05-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a>►<a class="article-category-link" href="/categories/%E5%AE%89%E5%85%A8/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      文件上传
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h1><h2 id="1-前端限制绕过（JS-校验）"><a href="#1-前端限制绕过（JS-校验）" class="headerlink" title="1. 前端限制绕过（JS 校验）"></a>1. 前端限制绕过（JS 校验）</h2><ul>
+<li><strong>原理</strong>：仅用 JavaScript 在浏览器端检查文件后缀、大小等，服务器不校验或只依赖前端传来的结果。</li>
+<li><strong>具体操作</strong>：<ul>
+<li><p><strong>禁用浏览器 JS：在浏览器设置或开发者工具中禁用 JavaScript，或用插件 NoScript。</strong></p>
+</li>
+<li><p><strong>直接发送，用 Burp Suite 抓包后修改后缀。</strong></p>
+</li>
+<li><p>**修改 HTML&#x2F;JS：在开发者工具中直接修改 **<code>allow_ext</code> 变量或删除 <code>checkFile()</code> 调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">        &lt;script&gt;</span><br><span class="line">            function checkFile() &#123;/*方法一：改为function checkFile() &#123;</span><br><span class="line">                                            return true;  以直接放行</span><br><span class="line">                                            &#125;*/</span><br><span class="line">                var file = document.getElementsByName(&#x27;upload_file&#x27;)[0].value;</span><br><span class="line">                if (file == null || file == &quot;&quot;) &#123;</span><br><span class="line">                    alert(&quot;请选择要上传的文件!&quot;);</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line">                var allow_ext = &quot;.jpg|.png|.gif&quot;;  /* 方法二：修改allow_ext变量 */</span><br><span class="line">                var ext_name = file.substring(file.lastIndexOf(&quot;.&quot;));</span><br><span class="line">                if (allow_ext.indexOf(ext_name + &quot;|&quot;) == -1) &#123;</span><br><span class="line">                    alert(&quot;该文件不允许上传，请上传&quot; + allow_ext + &quot;类型的文件,当前文件类型为: &quot; + ext_name);</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;form action=&quot;upload.php&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; onsubmit=&quot;return checkFile();&quot;&gt;</span><br><span class="line">        &lt;input type=&quot;file&quot; name=&quot;upload_file&quot; /&gt;          /* 方法二：直接删除onsubmit=&quot;return checkFile(); */</span><br><span class="line">        &lt;input type=&quot;submit&quot; value=&quot;上传&quot; /&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>直接提交请求：用 Burp Suite、Postman 等工具绕过页面，直接手动编写 HTTP 请求包构造请求，直接测试后端</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>如果上传错误文件时抓包工具抓到包，前端可以通过这份文件，但文件验证合法性在后端验证。删掉抓包数据中的 Content-Type 行，上传失败。可能是 👇</strong></p>
+<h2 id="2-MIME-Content-Type-绕过"><a href="#2-MIME-Content-Type-绕过" class="headerlink" title="2. MIME &#x2F; Content-Type 绕过"></a>2. MIME &#x2F; Content-Type 绕过</h2><ul>
+<li><strong>原理</strong>：服务器检查 <code>Content-Type</code> 头是否为 <code>image/jpeg</code>、<code>image/png</code> 等，但可以伪造。</li>
+<li><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if ($_FILES[&#x27;file&#x27;][&#x27;error&#x27;] === UPLOAD_ERR_OK) &#123;</span><br><span class="line">    $allowed_types = [&#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;];</span><br><span class="line">    $file_type = $_FILES[&#x27;file&#x27;][&#x27;type&#x27;];   /* 从请求头获取 */</span><br><span class="line"></span><br><span class="line">    if (in_array($file_type, $allowed_types)) &#123;</span><br><span class="line">        move_uploaded_file($_FILES[&#x27;file&#x27;][&#x27;tmp_name&#x27;], &#x27;./uploads/&#x27; . $_FILES[&#x27;file&#x27;][&#x27;name&#x27;]);</span><br><span class="line">        echo &quot;上传成功！&quot;;</span><br></pre></td></tr></table></figure></li>
+<li><strong>具体操作</strong>：<ul>
+<li><strong>如抓包修改 Content-Type: application&#x2F;x-php 为合法类型 Content-Type: image&#x2F;png，服务器以为它是图片，允许存储。</strong></li>
+<li><strong>当服务器不仅检查上传文件的 MIME 类型（Content-Type: image&#x2F;gif），还会读取文件内容的开头几个字节，来确认它是不是真正有正确文件格式时，攻击者就需要****伪造文件头</strong><br><strong>在恶意文件的最开头，直接加上目标文件格式对应的文件头(GIF→ 可打印 ASCII 字符</strong><code>GIF89a</code> 或 <code>GIF87a </code>| PNG→ 文件头包含不可打印字符，需要用二进制方式写入，<code>f.write(b&quot;\x89PNG\r\n\x1a\n</code>“)** **字节标识、魔数、文件头</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-后缀名黑名单绕过"><a href="#3-后缀名黑名单绕过" class="headerlink" title="3. 后缀名黑名单绕过"></a>3. 后缀名黑名单绕过</h2><ul>
+<li><strong>原理</strong>：只禁用部分危险后缀（如 <code>.php</code>、<code>.asp</code>），但遗漏了其他可解析后缀。</li>
+<li><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$blacklist = array(&#x27;php&#x27;, &#x27;asp&#x27;, &#x27;aspx&#x27;, &#x27;jsp&#x27;, &#x27;jspx&#x27;, &#x27;exe&#x27;, &#x27;dll&#x27;);</span><br><span class="line">$filename = $_FILES[&#x27;upload_file&#x27;][&#x27;name&#x27;];</span><br><span class="line">$ext = pathinfo($filename, PATHINFO_EXTENSION);</span><br><span class="line">if (in_array(strtolower($ext), $blacklist)) &#123;</span><br><span class="line">    die(&quot;文件类型不允许上传&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>具体操作</strong>（取决于服务器配置和语言）：<ul>
+<li><strong>同义后缀</strong>：<code>.php2</code>, <code>.php3</code>, <code>.php4</code>, <code>.php5</code>, <code>.phtml</code>, <code>.phps</code>, <code>.asp</code>, <code>.aspx</code>, <code>.cer</code>, <code>.asa</code> <strong>（若服务器并未以 php 方式解析 php3，（Apache)在环境配置文件中找到 httpd-conf 改 AddType))</strong></li>
+<li><strong>大小写</strong>：<code>.pHp</code>, <code>.PhP</code>（系统不区分大小写，黑名单没覆盖）</li>
+<li><strong>双写</strong>：<code>.phphpp</code> -&gt; 被替换掉 <code>php</code> 后成为 <code>.php</code>（如 <code>shell.pphphp</code> 可能绕过低级替换）</li>
+<li><strong>NTFS 流</strong>（Windows）：<code>shell.php::$DATA</code> 写上去会变成 <code>shell.php</code></li>
+<li><strong>空字节截断</strong>（PHP 版本 &lt; 5.3.4）：<code>shell.php%00.jpg</code>，服务端取后缀时读到 <code>%00</code> 截断，得到 <code>.jpg</code>；但保存时文件名截断为 <code>shell.php</code>。或 0x00。</li>
+<li><strong>末尾加点&#x2F;空格</strong>：<code>shell.php.</code> 或 <code>shell.php</code>（Windows 会自动去掉点&#x2F;空格，黑名单没覆盖）</li>
+<li><code>.htaccess</code> 绕过：修改文件解析规则（Apache 特有）<ol>
+<li><strong>SetHandler（强力覆盖）：强制特定文件类型作为 PHP 运行</strong></li>
+<li><strong>AddType（映射扩展名）：将特定扩展名映射为 PHP 类型</strong></li>
+<li><strong><code>FilesMatch&gt;</code></strong> 配合 <code>SetHandler</code>：将指定文件强制作 PHP 解析（通常结合 \正则匹配文件名），如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;FilesMatch &quot;shell&quot;&gt;</span><br><span class="line">SetHandler application/x-httpd-php</span><br><span class="line">&lt;/FilesMatch&gt;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-文件内容检测绕过"><a href="#4-文件内容检测绕过" class="headerlink" title="4. 文件内容检测绕过"></a>4. 文件内容检测绕过</h2><ul>
+<li><p><strong>原理</strong>：服务器用 <code>getimagesize()</code>（PHP)、<code>exif_imagetype()</code>、<code>Files.probeContentType</code>(Java(Spring)）、python-magic 库、<br><code>finfo</code> 扩展</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$allowed_mimes = [&#x27;image/jpeg&#x27;, &#x27;image/png&#x27;, &#x27;image/gif&#x27;];</span><br><span class="line">$uploaded_file = $_FILES[&#x27;upload_file&#x27;];</span><br><span class="line">// 打开 finfo 资源，FILEINFO_MIME_TYPE 表示只获取 MIME 类型</span><br><span class="line">$finfo = finfo_open(FILEINFO_MIME_TYPE);</span><br><span class="line">$mime_type = finfo_file($finfo, $uploaded_file[&#x27;tmp_name&#x27;]);</span><br><span class="line">finfo_close($finfo);</span><br><span class="line">if (!in_array($mime_type, $allowed_mimes)) &#123;</span><br><span class="line">    die(&quot;文件内容不是允许的图片类型&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>判断是否为图片。</strong> <strong>如果只检查前几个字节，可用伪造图片头的图片马。</strong> <strong>然而，这些函数如</strong><code>getimagesize()</code> 会尝试解析完整的结构、找到必须的图像数据快，能够识别出简单拼接但破坏了图片结构的文件，所以仅伪造图片头会被拦住，需要命令行拼接或中间注入的图片马。</p>
+</li>
+<li><p><strong>具体操作</strong>：</p>
+<ul>
+<li><strong>命令行拼接</strong>：<code>cat shell.php &gt;&gt; image.jpg</code>（Linux） 或 <code>copy /b image.jpg+shell.php shell.jpg</code>（Windows）</li>
+<li><strong>伪造图片头</strong>：<code>GIF89a</code> 开头，后面跟 <code>&lt;?php phpinfo(); ?&gt;</code></li>
+<li><strong>绕过 <code>getimagesize()</code></strong>：在 PNG 的 IHDR 块之后插入 PHP 代码（需保证图像结构大致完整）</li>
+<li><strong>二次渲染绕过</strong>：有些库会重新渲染图片，舍弃原始文件的非图像数据，导致恶意代码被抹掉；渲染过程并非完美复制，它只会改变图片的部分数据。所以需要用脚本在图片安全区位置（如注释块）插入代码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$uploaded_file = $_FILES[&#x27;upload_file&#x27;];</span><br><span class="line">$src = imagecreatefromjpeg($uploaded_file[&#x27;tmp_name&#x27;]);</span><br><span class="line">if ($src === false) &#123;</span><br><span class="line">    die(&quot;不是有效的 JPEG 图片&quot;);</span><br><span class="line">&#125;</span><br><span class="line">// 重新保存，丢弃原始文件中所有非图像数据</span><br><span class="line">imagejpeg($src, &#x27;./uploads/clean_&#x27; . uniqid() . &#x27;.jpg&#x27;);</span><br><span class="line">imagedestroy($src);</span><br><span class="line">echo &quot;上传成功&quot;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>最后，图片马需配合文件包含漏洞（常见函数 👇)或特定服务器配置才能触发执行</strong></p>
+<ul>
+<li><code>include()</code></li>
+<li><code>include_once()</code></li>
+<li><code>require()</code></li>
+<li><code>require_once()</code></li>
+</ul>
+<p><strong>这四个函数都会把指定的文件当作 PHP 代码来解析和执行，然后可以构造请求触发执行。</strong></p>
+</li>
+</ul>
+<hr>
+<h2 id="5-条件竞争"><a href="#5-条件竞争" class="headerlink" title="5.条件竞争"></a>5.条件竞争</h2><p><strong>先上传，后检查</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$tempFile = $_FILES[&#x27;file&#x27;][&#x27;tmp_name&#x27;];        </span><br><span class="line">$targetFile = &#x27;./uploads/&#x27; . $_FILES[&#x27;file&#x27;][&#x27;name&#x27;];</span><br><span class="line"></span><br><span class="line">move_uploaded_file($tempFile, $targetFile);     //先移动到正式目录</span><br><span class="line"></span><br><span class="line">if (!isValidImage($targetFile)) &#123;               //再检查</span><br><span class="line">    unlink($targetFile);                       </span><br><span class="line">    die(&quot;不是图片&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>攻击者上传一个恶意脚本文件（如 shell.php）后，</strong> <strong>服务器执行 move_uploaded_file()，将文件从临时目录移动到 Web 可访问的目录（如 &#x2F;uploads&#x2F;shell.php）</strong> **在服务器执行后续检查代码（如调用 unlink() 删除非法文件）之前，攻击者通过另一个并发请求（例如使用多线程脚本或 Burp Suite 的并发功能）**<strong>频繁访问</strong> <code>http://example.com/uploads/shell.php</code> <strong>如果攻击者的请求在 unlink() 执行之前到达 Web 服务器，那么该脚本文件就会被执行，从而触发 webshell</strong> <strong>即使之后文件被删除，攻击者可能已经执行了任意命令或进一步植入持久后门</strong></p>
+<p><strong>这个时间窗口通常非常短,但通过大量并发请求，攻击者可以提高命中概率</strong></p>
+<h2 id="6-WAF-安全软件绕过"><a href="#6-WAF-安全软件绕过" class="headerlink" title="6. WAF&#x2F;安全软件绕过"></a>6. WAF&#x2F;安全软件绕过</h2><ul>
+<li><strong>原理</strong>：WAF 会检查请求包中的恶意特征（如 <code>&lt;?php</code>, <code>eval</code>, <code>system</code>），通过变形、分块、混淆等方式让 WAF 识别不到，但后端 PHP 能解析。</li>
+<li><strong>具体操作</strong>：<ul>
+<li><strong>换行绕过</strong>：<code>&lt;ph\np</code> 在 HTTP 头里换行，某些 WAF 会放过，但后端 PHP 仍能解析（取决于版本）。</li>
+<li><strong>URL 编码混淆</strong>：<code>%3C%3Fphp%20eval...</code> 在某些解析器中会解码。</li>
+<li><strong>分块传输</strong>（Chunked）：将 payload 分成多个小块，WAF 可能只检查第一块。</li>
+<li><strong>利用 <code>multipart/form-data</code> 边界绕过</strong>：某些 WAF 解析畸形 boundary 出错。</li>
+<li><strong>文件内容分段</strong>：<code>&lt;?php /* 注释 */ ?&gt;</code> 中间插入大量垃圾数据。</li>
+<li><strong>大小写 &#x2F; 部分检测</strong>：<code>eVal</code>, <code>SyStEm</code>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="预防"><a href="#预防" class="headerlink" title="预防"></a>预防</h1><p><strong>有效的防御需要组合多种措施：</strong> <strong>采用 “白名单” 验证：只允许上传预设的安全文件类型（如 image&#x2F;png, application&#x2F;pdf），用黑名单禁止危险类型容易百密一疏</strong></p>
+<p><strong>二次校验：</strong></p>
+<ul>
+<li><strong>检查文件扩展名。</strong></li>
+<li><strong>检查文件 MIME 类型。</strong></li>
+<li><strong>对图片文件，使用函数重新生成内容（这样会破坏任何隐藏的代码）。</strong></li>
+<li><strong>文件重命名：上传到服务器后，将文件重命名为随机的字符串（如 20250315_abc123.jpg），并去除原始文件名。</strong></li>
+<li><strong>分离存储与执行环境：将上传的文件存储在没有脚本执行权限的独立目录中，或者使用专门的、与主应用隔离的静态文件服务器。</strong></li>
+<li><strong>设置文件大小限制：防止通过超大文件进行拒绝服务攻击。</strong></li>
+<li><strong>部署 Web 应用防火墙（WAF）：作为一道额外的防线，拦截常见的恶意上传流量。</strong></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+</footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/23/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%99%BA%E8%83%BD%E6%96%87%E6%A1%A3%E7%AE%A1%E7%90%86prd/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          大学生智能文档管理prd
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/05/23/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">命令执行代码执行</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A7%E5%93%81/">产品</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%BA%A7%E5%93%81/prd/">prd</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/">安全</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/">XSS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/SSRF/">SSRF</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/SSRF/SSTI/">SSTI</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/XSS/SSRF/SSTI/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a></li></ul></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%89%E5%85%A8/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">五月 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">十一月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/05/23/%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%99%BA%E8%83%BD%E6%96%87%E6%A1%A3%E7%AE%A1%E7%90%86prd/">大学生智能文档管理prd</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/23/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/23/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">命令执行代码执行</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/23/Python%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E/">Python常见漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/04/2025-11-04-%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">我的第一篇博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 car5ot<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
