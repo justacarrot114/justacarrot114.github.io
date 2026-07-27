@@ -20,7 +20,21 @@
     var isFirstVisit = !sessionStorage.getItem(loaderSeenKey);
     var $gifs = $loader.find('.blog-loading-gif');
     var gifIndex = 0;
-    var activateGif = function(index){
+    var gifDurations = [4300, 4500, 5000];
+    var gifTimer = null;
+    var isLoaderReady = false;
+    var isLoaderFinished = false;
+    var finishLoadingScreen = function(){
+      if (isLoaderFinished) return;
+      isLoaderFinished = true;
+      sessionStorage.setItem(loaderSeenKey, '1');
+      clearTimeout(gifTimer);
+      $loader.addClass('is-hidden');
+      setTimeout(function(){
+        $loader.remove();
+      }, 520);
+    };
+    var activateGif = function(index, restart){
       var $gif = $gifs.eq(index);
       var lazySrc = $gif.attr('data-src');
 
@@ -28,8 +42,27 @@
         $gif.attr('src', lazySrc);
       }
 
+      if (restart && $gif.attr('src')) {
+        var src = $gif.attr('src');
+        $gif.attr('src', '');
+        $gif.get(0).offsetHeight;
+        $gif.attr('src', src);
+      }
+
       $gifs.removeClass('is-active');
       $gif.addClass('is-active');
+    };
+    var scheduleNextGif = function(){
+      gifTimer = setTimeout(function(){
+        if (isLoaderReady) {
+          finishLoadingScreen();
+          return;
+        }
+
+        gifIndex = (gifIndex + 1) % $gifs.length;
+        activateGif(gifIndex, true);
+        scheduleNextGif();
+      }, gifDurations[gifIndex] || 4500);
     };
 
     if (!isFirstVisit) {
@@ -40,10 +73,7 @@
       return;
     }
 
-    var gifTimer = setInterval(function(){
-      gifIndex = (gifIndex + 1) % $gifs.length;
-      activateGif(gifIndex);
-    }, 900);
+    scheduleNextGif();
 
     $gifs.each(function(){
       var lazySrc = $(this).attr('data-src');
@@ -80,23 +110,52 @@
 
     var getBackgroundImageUrls = function(){
       var urls = [];
-      Array.prototype.slice.call(document.querySelectorAll('body, #container, #wrap, #header, #banner, #header-outer, #logo-wrap')).forEach(function(el){
-        var bg = window.getComputedStyle(el).backgroundImage;
-        if (!bg || bg === 'none') return;
+      Array.prototype.slice.call(document.querySelectorAll('body, #container, #wrap, #header, #banner, #header-outer, #header-title, #logo-wrap')).forEach(function(el){
+        var backgrounds = [
+          window.getComputedStyle(el).backgroundImage,
+          window.getComputedStyle(el, '::before').backgroundImage,
+          window.getComputedStyle(el, '::after').backgroundImage
+        ];
 
-        bg.replace(/url\(["']?([^"')]+)["']?\)/g, function(_, url){
-          if (urls.indexOf(url) === -1) {
-            urls.push(url);
-          }
+        backgrounds.forEach(function(bg){
+          if (!bg || bg === 'none') return;
+
+          bg.replace(/url\(["']?([^"')]+)["']?\)/g, function(_, url){
+            if (urls.indexOf(url) === -1) {
+              urls.push(url);
+            }
+          });
         });
       });
       return urls;
     };
 
+    var waitForPetRendered = function(){
+      return new Promise(function(resolve){
+        var startedAt = Date.now();
+        var check = function(){
+          if (document.querySelector('#blog-pet')) {
+            resolve();
+            return;
+          }
+
+          if (Date.now() - startedAt > 3000) {
+            resolve();
+            return;
+          }
+
+          requestAnimationFrame(check);
+        };
+        check();
+      });
+    };
+
     var waitForMusic = function(){
       return new Promise(function(resolve){
-        var firstTrack = '/assets/music/mao-buyi-yicheng-shanlu-fixed.mp3';
+        var firstTrack = '/assets/music/zhuang-dafei-xiangjiang-zhonglu-fast.mp3';
+        var secondTrack = '/assets/music/mao-buyi-yicheng-shanlu-fixed.mp3';
         var previewAudio = new Audio();
+        var secondAudio = new Audio();
         var done = false;
 
         var finish = function(){
@@ -112,7 +171,11 @@
         previewAudio.addEventListener('error', finish, { once: true });
         previewAudio.src = firstTrack;
         previewAudio.load();
-        setTimeout(finish, 4000);
+
+        secondAudio.preload = 'auto';
+        secondAudio.src = secondTrack;
+        secondAudio.load();
+        window.__carrotSecondMusicWarmup = secondAudio;
       });
     };
 
@@ -133,16 +196,11 @@
         .concat(loadingImages)
         .map(waitForImage)
         .concat(backgroundImages.map(waitForImageUrl))
-        .concat([waitForMusic(), minimumShow])
+        .concat([waitForMusic(), waitForPetRendered(), minimumShow])
     );
 
     pageReady.then(function(){
-      sessionStorage.setItem(loaderSeenKey, '1');
-      clearInterval(gifTimer);
-      $loader.addClass('is-hidden');
-      setTimeout(function(){
-        $loader.remove();
-      }, 520);
+      isLoaderReady = true;
     });
   };
 
@@ -577,14 +635,14 @@
   // 侧栏功能按钮：主页与音乐
   var musicTracks = [
     {
-      title: '毛不易 - 一程山路',
-      src: '/assets/music/mao-buyi-yicheng-shanlu-fixed.mp3',
+      title: '庄达菲 - 湘江中路',
+      src: '/assets/music/zhuang-dafei-xiangjiang-zhonglu-fast.mp3',
       type: 'audio/mpeg',
       playable: true
     },
     {
-      title: '庄达菲 - 湘江中路',
-      src: '/assets/music/zhuang-dafei-xiangjiang-zhonglu-fast.mp3',
+      title: '毛不易 - 一程山路',
+      src: '/assets/music/mao-buyi-yicheng-shanlu-fixed.mp3',
       type: 'audio/mpeg'
     }
   ];
@@ -626,7 +684,7 @@
     var $progress = $('#sidebar-music-progress');
     var $floatingMusicToggle = $('#floating-music-toggle');
     var playableTracks = musicTracks;
-    var musicStateKey = 'carrot-blog-music-state-v2';
+    var musicStateKey = 'carrot-blog-music-state-v3';
     var lastMusicStateSave = 0;
     var pendingRestoreTime = null;
 
@@ -904,10 +962,30 @@
 
   // 轻量桌宠
   var petMessages = [
-    '喵，今天也要好好写博客。',
-    '我在这里陪你看文章。',
-    '点点分类，可能会发现新东西。',
-    '记得给音乐播放器喂一首歌。'
+    '昼短苦夜长，何不秉烛游',
+    '喵',
+    {
+      text: '设计真是太简单了',
+      rainbow: true
+    },
+    {
+      text: '设计真是太简单了',
+      rainbow: true
+    },
+    {
+      text: '设计真是太简单了',
+      rainbow: true
+    },
+    {
+      text: '设计真是太简单了',
+      rainbow: true
+    },
+    '接受所有小曲奇(*´ω`*)ﾉｼ',
+    '人被杀，就会死',
+    '(*・ω・)っ🐟',
+    'Is this real life,or is this just Fanta Sea?',
+    '梆梆不梆梆',
+    'vivo50助力思维驰2回家'
   ];
 
   var $pet = $([
@@ -927,7 +1005,14 @@
 
   $pet.on('click', function(){
     var message = petMessages[Math.floor(Math.random() * petMessages.length)];
-    $pet.find('.blog-pet-bubble').text(message);
+    var $bubble = $pet.find('.blog-pet-bubble');
+
+    if (message && message.rainbow) {
+      $bubble.html('<span class="rainbow-sparkle-text">' + message.text + '</span>');
+    } else {
+      $bubble.text(message);
+    }
+
     $pet.addClass('is-talking');
 
     clearTimeout($pet.data('talkTimer'));
