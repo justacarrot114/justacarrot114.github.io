@@ -191,12 +191,15 @@
     var minimumShow = new Promise(function(resolve){
       setTimeout(resolve, 1400);
     });
+    // 音乐在后台预加载，不阻塞加载页面
+    waitForMusic();
+
     var pageReady = Promise.all(
       visibleImages
         .concat(loadingImages)
         .map(waitForImage)
         .concat(backgroundImages.map(waitForImageUrl))
-        .concat([waitForMusic(), waitForPetRendered(), minimumShow])
+        .concat([waitForPetRendered(), minimumShow])
     );
 
     pageReady.then(function(){
