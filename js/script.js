@@ -7,7 +7,7 @@
   var $main = $('#main');
   var $searchButton = $('#sub-nav .nav-search-btn');
   var currentPath = window.location.pathname;
-  var isHomePage = currentPath === '/' || currentPath === '/index.html';
+  var isHomePage = currentPath === '/blog/' || currentPath === '/blog/index.html';
   var isArchiveOrCategoryPage = /^\/(archives|categories)(\/|$)/.test(currentPath);
   var isArticleListPage = $('.article').length > 1 || isHomePage || isArchiveOrCategoryPage;
   var isDetailPage = $('.article').length === 1 && !isArticleListPage;
@@ -210,7 +210,7 @@
   initLoadingScreen();
 
   if ($main.length && $searchWrap.length && $searchButton.length){
-    var $homeButton = $('<a id="blog-home-link" href="/"><span class="fa fa-home"></span><span class="home-button-text">主页</span></a>');
+    var $homeButton = $('<a id="blog-home-link" href="/blog/"><span class="fa fa-home"></span><span class="home-button-text">主页</span></a>');
     $searchButton.html('<span class="fa fa-search"></span>');
     $('#sub-nav .nav-icon[href="/atom.xml"]').remove();
 
@@ -656,7 +656,7 @@
     var $sidebarTools = $('<div id="sidebar-tools"></div>');
 
     if (!isHomePage){
-      var $sidebarHome = $('<a id="sidebar-home-link" href="/" title="回到主页" aria-label="回到主页"><span class="fa fa-home"></span></a>');
+      var $sidebarHome = $('<a id="sidebar-home-link" href="/blog/" title="回到主页" aria-label="回到主页"><span class="fa fa-home"></span></a>');
       $sidebarTools.append($sidebarHome);
     }
 
@@ -966,7 +966,7 @@
   // 轻量桌宠
   var petMessages = [
     '昼短苦夜长，何不秉烛游',
-    '喵',
+    '嘎',
     {
       text: '设计真是太简单了',
       rainbow: true
@@ -992,15 +992,9 @@
   ];
 
   var $pet = $([
-    '<button type="button" id="blog-pet" aria-label="桌宠小猫">',
-      '<span class="blog-pet-bubble">喵</span>',
-      '<span class="blog-pet-ear blog-pet-ear-left"></span>',
-      '<span class="blog-pet-ear blog-pet-ear-right"></span>',
-      '<span class="blog-pet-face">',
-        '<span class="blog-pet-eye blog-pet-eye-left"></span>',
-        '<span class="blog-pet-eye blog-pet-eye-right"></span>',
-        '<span class="blog-pet-mouth">ω</span>',
-      '</span>',
+    '<button type="button" id="blog-pet" aria-label="桌宠大鹅">',
+      '<span class="blog-pet-bubble">嘎</span>',
+      '<img class="blog-pet-goose" src="/assets/pet/goose.png?v=19" alt="">',
     '</button>'
   ].join(''));
 
@@ -1021,7 +1015,7 @@
     clearTimeout($pet.data('talkTimer'));
     $pet.data('talkTimer', setTimeout(function(){
       $pet.removeClass('is-talking');
-      $pet.find('.blog-pet-bubble').text('喵');
+      $pet.find('.blog-pet-bubble').text('嘎');
     }, 2600));
   });
 

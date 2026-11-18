@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>SETTING - 胡萝卜的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="设置页（彩蛋）">
+  <meta name="theme-color" content="#0b1030">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link rel="preload" href="/assets/fonts/fusion-pixel-12.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face {
+      font-family: "Fusion Pixel";
+      src: url("/assets/fonts/fusion-pixel-12.woff2") format("woff2");
+      font-display: swap;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      overflow: hidden;
+      background-color: #0b1030;
+      background-image:
+        radial-gradient(2px 2px at 14% 22%, #ffffff 50%, transparent 51%),
+        radial-gradient(2px 2px at 28% 42%, #a9c1ff 50%, transparent 51%),
+        radial-gradient(2px 2px at 62% 16%, #ffe9a3 50%, transparent 51%),
+        radial-gradient(2px 2px at 84% 46%, #ffffff 50%, transparent 51%),
+        linear-gradient(180deg, #0a0e28 0%, #16204a 55%, #0a0e28 100%);
+      color: #cfd8ff;
+      font-family: "Fusion Pixel", "Courier New", monospace;
+      image-rendering: pixelated;
+      -webkit-font-smoothing: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(0deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px) 0 0 / 8px 8px,
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px) 0 0 / 8px 8px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 14px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5vh 24px 18px;
+      background: rgba(8, 12, 34, 0.42);
+      border: 3px solid #e6ecff;
+      box-shadow:
+        0 0 0 3px #0b1030,
+        inset 0 0 0 3px #0b1030,
+        inset 0 0 0 6px rgba(150, 172, 240, 0.6);
+    }
+
+    .lazy-text {
+      margin-top: 20px;
+      font-size: 36px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      line-height: 1.6;
+      color: #f4f6ff;
+      text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+      text-align: center;
+    }
+
+    .note-slot {
+      position: relative;
+      display: inline-block;
+      width: 1.5em;
+      height: 1em;
+      vertical-align: baseline;
+    }
+
+    .note {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 54px;
+      height: 54px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      transform: translate(-50%, -52%);
+      animation: note-wobble 3.4s steps(2, end) infinite;
+      will-change: transform, opacity;
+    }
+
+    .note svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.4));
+    }
+
+    .note-char {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 6px;
+      font-size: 24px;
+      line-height: 1;
+      color: #2a2410;
+      pointer-events: none;
+    }
+
+    .note:hover,
+    .note:focus-visible {
+      animation-play-state: paused;
+      transform: translate(-50%, -60%);
+      outline: none;
+    }
+
+    .note.is-falling {
+      animation: note-fall 0.62s steps(8, end) forwards;
+      pointer-events: none;
+    }
+
+    @keyframes note-wobble {
+      0%, 100% {
+        transform: translate(-50%, -52%);
+      }
+      50% {
+        transform: translate(-50%, -58%);
+      }
+    }
+
+    @keyframes note-fall {
+      0% {
+        transform: translate(-50%, -52%);
+        opacity: 1;
+      }
+      18% {
+        transform: translate(-50%, -62%);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, 320%);
+        opacity: 0;
+      }
+    }
+
+    .stage {
+      flex: 1;
+      width: 100%;
+    }
+
+    .back {
+      display: inline-block;
+      padding: 8px 18px;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: 3px;
+      text-decoration: none;
+      color: #cfd8ff;
+      background: transparent;
+      border: 2px solid #566c86;
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    .back:hover,
+    .back:focus-visible {
+      color: #ffffff;
+      background: #46578f;
+      border-color: #cfd8ff;
+      outline: none;
+    }
+
+    .egg-float {
+      position: fixed;
+      left: 50%;
+      bottom: 14vh;
+      z-index: 6;
+      transform: translateX(-50%);
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .egg-float.is-dragging {
+      cursor: grabbing;
+    }
+
+    .egg-float.is-dragging .egg {
+      animation-play-state: paused;
+    }
+
+    .egg-burst {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 170px;
+      height: 170px;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .egg-wrap {
+      position: relative;
+      opacity: 0;
+      transform: scale(0.4) translateY(10px);
+      transition:
+        opacity 0.28s linear,
+        transform 0.46s cubic-bezier(0.2, 1.8, 0.4, 1);
+      will-change: transform, opacity;
+    }
+
+    .egg-float.is-visible .egg-wrap {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      transition-delay: 0.16s;
+    }
+
+    .egg-float.is-visible .egg-burst {
+      animation: burst-flash 0.6s steps(5, end) forwards;
+    }
+
+    .egg {
+      display: block;
+      width: 96px;
+      height: auto;
+      filter: drop-shadow(0 5px 0 rgba(0, 0, 0, 0.3));
+    }
+
+    .egg-float.is-visible .egg {
+      animation: egg-float 2.8s ease-in-out infinite 0.5s;
+    }
+
+    @keyframes burst-flash {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.55);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      55% {
+        opacity: 0.85;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.3);
+      }
+    }
+
+    @keyframes egg-float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .screen {
+        inset: 8px;
+        padding: 4vh 14px 14px;
+      }
+
+      .lazy-text {
+        font-size: 24px;
+        letter-spacing: 2px;
+      }
+
+      .note {
+        width: 42px;
+        height: 42px;
+      }
+
+      .note-char {
+        font-size: 24px;
+        padding-top: 4px;
+      }
+
+      .back {
+        font-size: 24px;
+      }
+
+      .egg {
+        width: 82px;
+      }
+
+      .egg-burst {
+        width: 140px;
+        height: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <p class="lazy-text">太懒了，<span class="note-slot"><button type="button" class="note" id="note" aria-label="撕下便利贴"><svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><path d="M2 1H14V2H15V14H14V15H2V14H1V2H2Z" fill="#2a2410"></path><path d="M3 2H13V3H14V13H13V14H3V13H2V3H3Z" fill="#ffe066"></path><rect x="3" y="3" width="8" height="1" fill="#fff3a8"></rect><path d="M11 11H13V13H14V14H11Z" fill="#d9a400"></path><rect x="4" y="0" width="8" height="3" fill="#2a2410"></rect><rect x="5" y="1" width="6" height="1" fill="#dfe6ff"></rect></svg><span class="note-char">没</span></button></span>有做</p>
+
+    <div class="stage" aria-hidden="true"></div>
+
+    <a class="back" href="/">返回</a>
+  </main>
+
+  <div class="egg-float" id="eggFloat">
+    <svg class="egg-burst" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
+      <g fill="#fff3c4">
+        <rect x="11" y="1" width="2" height="6"></rect>
+        <rect x="11" y="17" width="2" height="6"></rect>
+        <rect x="1" y="11" width="6" height="2"></rect>
+        <rect x="17" y="11" width="6" height="2"></rect>
+      </g>
+      <g fill="#ffe9a3">
+        <rect x="5" y="5" width="2" height="2"></rect>
+        <rect x="17" y="5" width="2" height="2"></rect>
+        <rect x="5" y="17" width="2" height="2"></rect>
+        <rect x="17" y="17" width="2" height="2"></rect>
+      </g>
+    </svg>
+
+    <div class="egg-wrap" id="egg">
+      <svg class="egg" viewBox="0 0 20 21" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
+        <ellipse cx="10" cy="20" rx="6.4" ry="0.9" fill="rgba(0,0,0,0.45)"></ellipse>
+        <clipPath id="egg-shape">
+          <path d="M8 0H12V1H13V2H14V3H15V5H16V7H17V13H16V15H15V16H14V17H13V18H12V19H8V18H7V17H6V16H5V15H4V13H3V7H4V5H5V3H6V2H7V1H8Z"></path>
+        </clipPath>
+        <g clip-path="url(#egg-shape)">
+          <rect x="0" y="0" width="20" height="3" fill="#ff6b6b"></rect>
+          <rect x="0" y="3" width="20" height="3" fill="#ffa94d"></rect>
+          <rect x="0" y="6" width="20" height="3" fill="#ffd43b"></rect>
+          <rect x="0" y="9" width="20" height="3" fill="#51cf66"></rect>
+          <rect x="0" y="12" width="20" height="3" fill="#4dabf7"></rect>
+          <rect x="0" y="15" width="20" height="4" fill="#b197fc"></rect>
+          <rect x="5" y="2" width="3" height="5" fill="#ffffff" opacity="0.45"></rect>
+        </g>
+        <path d="M8 0H12V1H13V2H14V3H15V5H16V7H17V13H16V15H15V16H14V17H13V18H12V19H8V18H7V17H6V16H5V15H4V13H3V7H4V5H5V3H6V2H7V1H8Z" fill="none" stroke="#121526" stroke-width="1"></path>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var note = document.getElementById('note');
+      var eggFloat = document.getElementById('eggFloat');
+      if (!note || !eggFloat) return;
+
+      note.addEventListener('click', function(){
+        if (note.classList.contains('is-falling')) return;
+        note.classList.add('is-falling');
+        setTimeout(function(){
+          eggFloat.classList.add('is-visible');
+        }, 520);
+      });
+
+      var dragging = false;
+      var offsetX = 0;
+      var offsetY = 0;
+
+      eggFloat.addEventListener('pointerdown', function(e){
+        if (!eggFloat.classList.contains('is-visible')) return;
+        var rect = eggFloat.getBoundingClientRect();
+        eggFloat.style.left = rect.left + 'px';
+        eggFloat.style.top = rect.top + 'px';
+        eggFloat.style.bottom = 'auto';
+        eggFloat.style.transform = 'none';
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        dragging = true;
+        eggFloat.classList.add('is-dragging');
+        if (eggFloat.setPointerCapture) {
+          eggFloat.setPointerCapture(e.pointerId);
+        }
+        e.preventDefault();
+      });
+
+      eggFloat.addEventListener('pointermove', function(e){
+        if (!dragging) return;
+        var w = eggFloat.offsetWidth;
+        var h = eggFloat.offsetHeight;
+        var x = Math.min(Math.max(8, e.clientX - offsetX), window.innerWidth - w - 8);
+        var y = Math.min(Math.max(8, e.clientY - offsetY), window.innerHeight - h - 8);
+        eggFloat.style.left = x + 'px';
+        eggFloat.style.top = y + 'px';
+      });
+
+      function endDrag(e){
+        if (!dragging) return;
+        dragging = false;
+        eggFloat.classList.remove('is-dragging');
+        if (eggFloat.releasePointerCapture) {
+          try { eggFloat.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+      }
+
+      eggFloat.addEventListener('pointerup', endDrag);
+      eggFloat.addEventListener('pointercancel', endDrag);
+    })();
+  </script>
+</body>
+</html>
