@@ -4,18 +4,10 @@
   <meta charset="utf-8">
   <title>小游戏 - 胡萝卜的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="小游戏页面（占位中）">
+  <meta name="description" content="小游戏演示">
+  <meta name="theme-color" content="#000000">
   <link rel="shortcut icon" href="/favicon.png">
-  <link rel="preload" href="/assets/fonts/fusion-pixel-12.woff2" as="font" type="font/woff2" crossorigin>
   <style>
-    @font-face {
-      font-family: "Fusion Pixel";
-      src: url("/assets/fonts/fusion-pixel-12.woff2") format("woff2");
-      font-display: swap;
-      font-weight: 400;
-      font-style: normal;
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -28,78 +20,124 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background:
-        linear-gradient(0deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) 0 0 / 16px 16px,
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) 0 0 / 16px 16px,
-        #1a1c2c;
-      color: #f4f4f4;
-      font-family: "Fusion Pixel", "Courier New", "SimHei", monospace;
+      background-color: #000000;
+      background-image:
+        linear-gradient(0deg, #ffffff 1px, transparent 1px),
+        linear-gradient(90deg, #ffffff 1px, transparent 1px);
+      background-size: 16px 16px;
       image-rendering: pixelated;
-      -webkit-font-smoothing: none;
     }
 
-    .game-screen {
-      width: min(520px, 100%);
-      text-align: center;
+    .boot-flash {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: #ffffff;
+      pointer-events: none;
+      animation: boot-flash 0.95s steps(6, end) forwards;
     }
 
-    .game-title {
-      font-size: 36px;
-      font-weight: 400;
-      letter-spacing: 4px;
-      color: #ffcd75;
-      text-shadow:
-        4px 0 #333c57,
-        -4px 0 #333c57,
-        0 4px 0 #333c57,
-        0 -4px 0 #333c57;
-      margin-bottom: 20px;
+    @keyframes boot-flash {
+      0%, 40% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
     }
 
-    .game-text {
-      font-size: 24px;
-      line-height: 1.8;
-      letter-spacing: 2px;
-      color: #94b0c2;
-      margin-bottom: 40px;
+    .frame {
+      position: relative;
+      width: min(880px, 92vw);
+      padding: 12px;
+      background: #000000;
+      border: 3px solid #ffffff;
+      box-shadow:
+        0 0 0 6px #000000,
+        0 0 0 7px #ffffff;
     }
 
-    .game-back {
-      display: inline-block;
-      padding: 10px 22px;
-      font: inherit;
-      font-size: 24px;
-      letter-spacing: 4px;
-      text-decoration: none;
-      color: #f4f4f4;
-      background: #333c57;
-      border: 4px solid #f4f4f4;
-      box-shadow: 6px 6px 0 #11121c;
+    .frame::before,
+    .frame::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ffffff;
     }
 
-    .game-back:hover,
-    .game-back:focus-visible {
-      background: #566c86;
-      outline: none;
+    .frame::before {
+      top: -3px;
+      left: -3px;
     }
 
-    .game-back:active {
-      transform: translate(6px, 6px);
-      box-shadow: none;
+    .frame::after {
+      bottom: -3px;
+      right: -3px;
+    }
+
+    .frame video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000000;
+      border: 2px solid #ffffff;
     }
 
     @media (max-width: 480px) {
-      .game-title {
-        font-size: 24px;
+      body {
+        padding: 16px;
+      }
+
+      .frame {
+        padding: 6px;
+        border-width: 2px;
+        box-shadow:
+          0 0 0 4px #000000,
+          0 0 0 5px #ffffff;
+      }
+
+      .frame video {
+        border-width: 1px;
       }
     }
   </style>
 </head>
 <body>
-  <main class="game-screen">
-    <h1 class="game-title">小 游 戏</h1>
-    <p class="game-text">开发中<br>敬请期待</p>
-    <a class="game-back" href="/">返回开屏</a>
-  </main>
+  <div class="boot-flash" aria-hidden="true"></div>
+
+  <div class="frame">
+    <video id="gameVideo" src="/assets/game/game-demo.mp4" controls autoplay loop playsinline preload="auto"></video>
+  </div>
+
+  <script>
+    (function(){
+      var video = document.getElementById('gameVideo');
+      if (!video) return;
+
+      function playWithSound() {
+        video.muted = false;
+        var p = video.play();
+        if (p && p.catch) {
+          p.catch(function(){
+            // 浏览器拦截有声自动播放时，先静音播放，保证画面动起来
+            video.muted = true;
+            var p2 = video.play();
+            if (p2 && p2.catch) p2.catch(function(){});
+          });
+        }
+      }
+
+      playWithSound();
+
+      // 用户首次与页面交互时再次尝试开启声音
+      document.addEventListener('pointerdown', function(){
+        if (!video.muted) return;
+        video.muted = false;
+        var p = video.play();
+        if (p && p.catch) p.catch(function(){});
+      });
+    })();
+  </script>
 </body>
 </html>

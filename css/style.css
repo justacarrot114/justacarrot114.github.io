@@ -1872,7 +1872,6 @@ body::before {
   border-top: 8px solid #fff;
 }
 
-#blog-pet:hover .blog-pet-bubble,
 #blog-pet.is-talking .blog-pet-bubble {
   opacity: 1;
   transform: translateY(0);

@@ -993,7 +993,7 @@
 
   var $pet = $([
     '<button type="button" id="blog-pet" aria-label="桌宠大鹅">',
-      '<span class="blog-pet-bubble">嘎</span>',
+      '<span class="blog-pet-bubble"></span>',
       '<img class="blog-pet-goose" src="/assets/pet/goose.png?v=19" alt="">',
     '</button>'
   ].join(''));
@@ -1015,7 +1015,7 @@
     clearTimeout($pet.data('talkTimer'));
     $pet.data('talkTimer', setTimeout(function(){
       $pet.removeClass('is-talking');
-      $pet.find('.blog-pet-bubble').text('嘎');
+      $pet.find('.blog-pet-bubble').text('');
     }, 2600));
   });
 
